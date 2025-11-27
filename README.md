@@ -11,12 +11,15 @@ Apache Airflow doesn’t run natively on Windows, leaving me with two options: r
 I started by creating a directory named “airflow-docker”. In this directory I placed two files: 
 A .env file containing only the following line (to avoid Airflow UID errors):
 `AIRFLOW_UID=50000`
+
 Airflow’s docker-compose.yaml file (downloaded from https://airflow.apache.org/docs/apache-airflow/3.1.3/docker-compose.yaml). I edited this file to install necessary python libraries at build:
 `_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- requests pandas logging datetime}`
+
 IMPORTANT NOTE: THIS SHOULD NOT BE DONE IN PRODUCTION ENVIRONMENTS! This causes libraries to be installed at runtime, including when the container is restarted, opening one up to security vulnerabilities. I used it due to convenience, but in a production environment, one should build a custom image with necessary dependencies instead.
 
 After placing these files in the airflow directory, I opened the directory through the Docker desktop console and ran the following command to initialize the Airflow database:
 `docker compose up airflow-init`
+
 NOTE: if your Airflow container keeps restarting after 10 seconds, it’s probably because you didn’t initialize the database.
 
 Then to start the container, I used the following command:
